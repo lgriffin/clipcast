@@ -8,6 +8,8 @@ local raidCasts = {}
 local recentInterrupts = {}
 local addonUsers = {}
 
+local playerInterruptExpiry = 0
+
 local ADDON_PREFIX = "CCT"
 local CANCEL_EXPIRY = 10.0
 local AFFILIATION_RAID_PARTY = 0x6
@@ -98,7 +100,12 @@ frame:SetScript("OnEvent", function(self, event, ...)
 
     elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
         if activeCast and activeCast.castGUID == castGUID then
-            activeCast.outcome = "INTERRUPTED"
+            -- TBC Classic fires INTERRUPTED for both self-cancels and external interrupts.
+            -- Only mark as interrupted if CLEU recorded a recent SPELL_INTERRUPT on the player.
+            if GetTime() < playerInterruptExpiry then
+                activeCast.outcome = "INTERRUPTED"
+                playerInterruptExpiry = 0
+            end
         end
 
     elseif event == "UNIT_SPELLCAST_FAILED" then
@@ -150,6 +157,10 @@ end)
 function ns:HandleCLEU()
     local timestamp, subevent, _, sourceGUID, sourceName, sourceFlags, _,
         destGUID, destName, destFlags, _, spellID, spellName, _, extraArg = CombatLogGetCurrentEventInfo()
+
+    if subevent == "SPELL_INTERRUPT" and destGUID == UnitGUID("player") then
+        playerInterruptExpiry = GetTime() + 0.5
+    end
 
     if not sourceName or sourceGUID == UnitGUID("player") then return end
     if not sourceFlags or bit.band(sourceFlags, AFFILIATION_RAID_PARTY) == 0 then return end

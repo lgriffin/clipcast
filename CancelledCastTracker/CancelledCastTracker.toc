@@ -1,4 +1,4 @@
-## Interface: 20504
+## Interface: 20506
 ## Title: CancelledCastTracker
 ## Notes: Tracks cancelled casts and shows what you cast next
 ## Author: Leigh
