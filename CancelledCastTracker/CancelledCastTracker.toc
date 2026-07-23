@@ -1,0 +1,12 @@
+## Interface: 20504
+## Title: CancelledCastTracker
+## Notes: Tracks cancelled casts and shows what you cast next
+## Author: Leigh
+## Version: 1.0.0
+## SavedVariablesPerCharacter: CancelledCastCharDB
+## X-Category: Combat
+
+Core.lua
+Stats.lua
+Display.lua
+Config.lua
