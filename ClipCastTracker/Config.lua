@@ -5,11 +5,14 @@ local function Msg(text)
 end
 
 local function PrintHelp()
-    Msg("CancelledCastTracker commands:")
-    Msg("  |cffffff88/cct stats|r — Session cancel breakdown")
-    Msg("  |cffffff88/cct lifetime|r — All-time cancel stats")
+    Msg("ClipCastTracker commands:")
+    Msg("  |cffffff88/cct|r — Toggle main window")
+    Msg("  |cffffff88/cct options|r — Show this help")
+    Msg("  |cffffff88/cct stats|r — Session cancel breakdown (chat)")
+    Msg("  |cffffff88/cct lifetime|r — All-time cancel stats (chat)")
     Msg("  |cffffff88/cct history|r — Past session summaries")
-    Msg("  |cffffff88/cct reset|r — Reset session stats")
+    Msg("  |cffffff88/cct reset|r — Reset session stats (saves to lifetime first)")
+    Msg("  |cffffff88/cct resetall|r — Reset lifetime stats")
     Msg("  |cffffff88/cct report|r — Send summary to raid/party chat")
     Msg("  |cffffff88/cct raid|r — Show raid member cancels")
     Msg("  |cffffff88/cct alert|r — Toggle on-screen alert")
@@ -36,6 +39,10 @@ SlashCmdList["CCT"] = function(msg)
         ns:ResetSession()
         Msg("Session stats reset.")
 
+    elseif cmd == "resetall" then
+        ns:ResetLifetime()
+        Msg("Lifetime stats reset.")
+
     elseif cmd == "report" then
         ns:SendReport()
 
@@ -59,7 +66,13 @@ SlashCmdList["CCT"] = function(msg)
     elseif cmd == "test" then
         ns:TestAlert()
 
-    else
+    elseif cmd == "show" then
+        ns:ToggleMainWindow()
+
+    elseif cmd == "help" or cmd == "options" then
         PrintHelp()
+
+    else
+        ns:ToggleMainWindow()
     end
 end
