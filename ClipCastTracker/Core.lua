@@ -41,8 +41,12 @@ frame:SetScript("OnEvent", function(self, event, ...)
         if name == addonName then
             ns:InitDB()
             ns:InitAlertFrame()
+            local ok, err = pcall(ns.InitMainWindow, ns)
+            if not ok then
+                DEFAULT_CHAT_FRAME:AddMessage("|cffcccccc[CCT]|r Warning: window init failed: " .. tostring(err))
+            end
             ns:StartSession()
-            DEFAULT_CHAT_FRAME:AddMessage("|cffcccccc[CCT]|r CancelledCastTracker loaded. Type /cct for commands.")
+            DEFAULT_CHAT_FRAME:AddMessage("|cffcccccc[CCT]|r ClipCastTracker loaded. Type /cct for window, /cct help for commands.")
         end
         return
     end
@@ -73,6 +77,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
     if event == "UNIT_SPELLCAST_START" then
         if lastCancel then
             local name, rank = GetSpellInfo(spellID)
+            pcall(ns.RecordNextCast, ns, lastCancel.spellID, spellID, ns.FormatSpellName(name, rank))
             ns:OnNextCastAfterCancel(lastCancel, spellID, name, rank)
             lastCancel = nil
         end
@@ -94,6 +99,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
         end
         if lastCancel then
             local name, rank = GetSpellInfo(spellID)
+            pcall(ns.RecordNextCast, ns, lastCancel.spellID, spellID, ns.FormatSpellName(name, rank))
             ns:OnNextCastAfterCancel(lastCancel, spellID, name, rank)
             lastCancel = nil
         end

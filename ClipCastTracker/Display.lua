@@ -13,7 +13,7 @@ function ns:OnNextCastAfterCancel(cancel, nextSpellID, nextSpellName, nextSpellR
     local cancelLabel = ns.FormatSpellName(cancel.spellName, cancel.spellRank)
     local nextLabel = ns.FormatSpellName(nextSpellName or "Unknown", nextSpellRank)
     DEFAULT_CHAT_FRAME:AddMessage(string.format(
-        "%s[CCT]%s Cancelled %s%s%s → %s%s%s",
+        "%s[CCT]%s Clipped %s%s%s → %s%s%s",
         COLORS.tag, COLORS.reset,
         COLORS.cancel, cancelLabel, COLORS.reset,
         COLORS.next, nextLabel, COLORS.reset
@@ -48,10 +48,10 @@ end
 function ns:PrintLifetimeStats()
     local stats = ns:GetLifetimeStats()
     if #stats == 0 then
-        DEFAULT_CHAT_FRAME:AddMessage(COLORS.tag .. "[CCT]" .. COLORS.reset .. " No cancelled casts recorded.")
+        DEFAULT_CHAT_FRAME:AddMessage(COLORS.tag .. "[CCT]" .. COLORS.reset .. " No clipped casts recorded.")
         return
     end
-    DEFAULT_CHAT_FRAME:AddMessage(COLORS.tag .. "[CCT]" .. COLORS.reset .. " Lifetime cancel stats:")
+    DEFAULT_CHAT_FRAME:AddMessage(COLORS.tag .. "[CCT]" .. COLORS.reset .. " Lifetime clip stats:")
     for _, entry in ipairs(stats) do
         DEFAULT_CHAT_FRAME:AddMessage(string.format(
             "  %s: %d/%d (%.1f%%)",
@@ -175,7 +175,7 @@ function ns:ShowAlert(spellID, displayName)
 
     local _, _, spellIcon = GetSpellInfo(spellID)
     f.icon:SetTexture(spellIcon)
-    f.text:SetText(COLORS.cancel .. "Cancelled" .. COLORS.reset .. " " .. displayName)
+    f.text:SetText(COLORS.cancel .. "Clipped" .. COLORS.reset .. " " .. displayName)
 
     f.fadeGroup:Stop()
     f:SetAlpha(1)
